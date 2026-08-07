@@ -1,0 +1,125 @@
+{
+  "version": "1.0",
+  "presets": [
+    {
+      "name": "Online Broadcast",
+      "description": "LUFS target -14 ±1.0 LU, PLR range 8-12 LU",
+      "loudness": {
+        "targetLUFS": -14.0,
+        "toleranceLU": 1.0,
+        "plrRange": {
+          "min": 8.0,
+          "max": 12.0
+        }
+      },
+      "tonalBalance": {
+        "bands": [
+          { "name": "Low", "minFreq": 20, "maxFreq": 250, "target": 0.0, "tolerance": 3.0 },
+          { "name": "LowMid", "minFreq": 250, "maxFreq": 2000, "target": 0.0, "tolerance": 2.5 },
+          { "name": "HighMid", "minFreq": 2000, "maxFreq": 8000, "target": 0.0, "tolerance": 2.0 },
+          { "name": "High", "minFreq": 8000, "maxFreq": 20000, "target": 0.0, "tolerance": 2.0 }
+        ]
+      }
+    },
+    {
+      "name": "FM Broadcast",
+      "description": "LUFS target -9 to -11 LUFS, PLR range 4-6 LU",
+      "loudness": {
+        "targetLUFS": -10.0,
+        "toleranceLU": 1.0,
+        "plrRange": {
+          "min": 4.0,
+          "max": 6.0
+        }
+      },
+      "tonalBalance": {
+        "bands": [
+          { "name": "Low", "minFreq": 20, "maxFreq": 250, "target": 0.0, "tolerance": 4.0 },
+          { "name": "LowMid", "minFreq": 250, "maxFreq": 2000, "target": 0.0, "tolerance": 3.0 },
+          { "name": "HighMid", "minFreq": 2000, "maxFreq": 8000, "target": 0.0, "tolerance": 2.5 },
+          { "name": "High", "minFreq": 8000, "maxFreq": 20000, "target": 0.0, "tolerance": 2.5 }
+        ]
+      }
+    },
+    {
+      "name": "EDM",
+      "description": "Electronic Dance Music - balanced low end and bright highs",
+      "loudness": {
+        "targetLUFS": -9.0,
+        "toleranceLU": 1.5,
+        "plrRange": {
+          "min": 6.0,
+          "max": 10.0
+        }
+      },
+      "tonalBalance": {
+        "bands": [
+          { "name": "Low", "minFreq": 20, "maxFreq": 250, "target": 2.0, "tolerance": 2.0 },
+          { "name": "LowMid", "minFreq": 250, "maxFreq": 2000, "target": 0.0, "tolerance": 2.0 },
+          { "name": "HighMid", "minFreq": 2000, "maxFreq": 8000, "target": -1.0, "tolerance": 1.5 },
+          { "name": "High", "minFreq": 8000, "maxFreq": 20000, "target": 1.0, "tolerance": 2.0 }
+        ]
+      }
+    },
+    {
+      "name": "Pop",
+      "description": "Modern pop music - vocal focused, balanced",
+      "loudness": {
+        "targetLUFS": -8.0,
+        "toleranceLU": 1.5,
+        "plrRange": {
+          "min": 7.0,
+          "max": 11.0
+        }
+      },
+      "tonalBalance": {
+        "bands": [
+          { "name": "Low", "minFreq": 20, "maxFreq": 250, "target": 0.0, "tolerance": 2.5 },
+          { "name": "LowMid", "minFreq": 250, "maxFreq": 2000, "target": 0.5, "tolerance": 2.0 },
+          { "name": "HighMid", "minFreq": 2000, "maxFreq": 8000, "target": -0.5, "tolerance": 1.5 },
+          { "name": "High", "minFreq": 8000, "maxFreq": 20000, "target": 0.0, "tolerance": 2.0 }
+        ]
+      }
+    },
+    {
+      "name": "Rock",
+      "description": "Rock music - strong midrange, controlled lows",
+      "loudness": {
+        "targetLUFS": -7.0,
+        "toleranceLU": 2.0,
+        "plrRange": {
+          "min": 5.0,
+          "max": 9.0
+        }
+      },
+      "tonalBalance": {
+        "bands": [
+          { "name": "Low", "minFreq": 20, "maxFreq": 250, "target": -1.0, "tolerance": 3.0 },
+          { "name": "LowMid", "minFreq": 250, "maxFreq": 2000, "target": 0.0, "tolerance": 2.0 },
+          { "name": "HighMid", "minFreq": 2000, "maxFreq": 8000, "target": 0.0, "tolerance": 2.0 },
+          { "name": "High", "minFreq": 8000, "maxFreq": 20000, "target": 0.5, "tolerance": 2.5 }
+        ]
+      }
+    },
+    {
+      "name": "Acoustic",
+      "description": "Acoustic instruments - natural balance",
+      "loudness": {
+        "targetLUFS": -18.0,
+        "toleranceLU": 2.0,
+        "plrRange": {
+          "min": 10.0,
+          "max": 14.0
+        }
+      },
+      "tonalBalance": {
+        "bands": [
+          { "name": "Low", "minFreq": 20, "maxFreq": 250, "target": 0.0, "tolerance": 2.0 },
+          { "name": "LowMid", "minFreq": 250, "maxFreq": 2000, "target": 0.0, "tolerance": 1.5 },
+          { "name": "HighMid", "minFreq": 2000, "maxFreq": 8000, "target": 0.0, "tolerance": 1.5 },
+          { "name": "High", "minFreq": 8000, "maxFreq": 20000, "target": 0.0, "tolerance": 1.5 }
+        ]
+      }
+    }
+  ]
+}

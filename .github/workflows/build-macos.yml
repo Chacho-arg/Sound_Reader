@@ -1,0 +1,75 @@
+name: Build macOS
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-macos:
+    runs-on: macos-14
+    strategy:
+      matrix:
+        arch: [arm64, x64]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Configure CMake (arm64)
+        if: matrix.arch == 'arm64'
+        run: |
+          cmake -B build-arm64 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0
+
+      - name: Configure CMake (x64)
+        if: matrix.arch == 'x64'
+        run: |
+          cmake -B build-x64 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES=x86_64 \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0
+
+      - name: Build (arm64)
+        if: matrix.arch == 'arm64'
+        run: cmake --build build-arm64 --config Release -j
+
+      - name: Build (x64)
+        if: matrix.arch == 'x64'
+        run: cmake --build build-x64 --config Release -j
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SoundReader-macos-${{ matrix.arch }}
+          path: |
+            build-${{ matrix.arch }}/SoundReader.app
+            build-${{ matrix.arch }}/SoundReader.component
+          retention-days: 30
+
+      - name: Notarize macOS build
+        if: matrix.arch == 'arm64' && github.event_name == 'push'
+        uses: apple-actions/notarize-and-authenticate@v2
+        with:
+          app-path: build-arm64/SoundReader.app
+          apple-id: ${{ secrets.APPLE_ID }}
+          app-specific-password: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          team-id: ${{ secrets.APPLE_TEAM_ID }}
+          bundling-id: com.yourcompany.soundreader
+          primary-bundle-id: com.yourcompany.soundreader
+          wait-for-notarization: true
+
+      - name: Create DMG
+        if: matrix.arch == 'arm64' && github.event_name == 'push'
+        run: bash build-dmg.sh build-arm64/SoundReader.app

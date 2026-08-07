@@ -1,0 +1,79 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        include:
+          - build_type: Release
+            cxx_flags: /O2 /GL
+            linker_flags: /LTCG
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+          installation-root: C:\Program Files\Microsoft Visual Studio
+
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.28.0'
+
+      - name: Configure CMake
+        run: |
+          cmake -B build `
+            -G "Visual Studio 17 2022" `
+            -A x64 `
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
+            -DCMAKE_FLAGS=${{ matrix.cxx_flags }} `
+            -DCMAKE_EXE_LINKER_FLAGS=${{ matrix.linker_flags }}
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }} -j
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SoundReader-windows-x64
+          path: |
+            build/SoundReader.exe
+            build/SoundReader.vst3
+          retention-days: 30
+
+      - name: Sign Windows executable
+        if: github.event_name == 'push' && github.repository == '{{github.repository}}'
+        run: |
+          echo "Signing Windows executable"
+          signtool sign /f "${{ secrets.WIN_CERT_PFX }}" /p "${{ secrets.WIN_CERT_PASSWORD }}" /tr http://timestamp.digicert.com /td sha256 /sha1 "${{ secrets.WIN_CERT_SHA1 }}" build/SoundReader.exe
+
+      - name: Install Inno Setup
+        if: github.event_name == 'push'
+        run: |
+          choco install innoserver -y -version 6.3.7
+          echo "C:\Program Files (x86)\Inno Setup 6" >> $GITHUB_PATH
+
+      - name: Build Windows Installer
+        if: github.event_name == 'push'
+        run: |
+          ISCC.exe installer.iss
+
+      - name: Upload Installer Artifacts
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: SoundReader-windows-installer
+          path: SoundReaderInstaller.exe
+          retention-days: 30

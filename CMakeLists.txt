@@ -1,0 +1,73 @@
+cmake_minimum_required(VERSION 3.22)
+project(SoundReader LANGUAGES C CXX)
+
+# JUCE options
+set(JUCE_CHECK_MACRO_DEFINITIONS 1 CACHE STRING "")
+set(JUCE_ENABLE_STATIC_ANALYZER OFF CACHE STRING "")
+set(JUCE_ENABLE_DEBUG_LOGGING OFF CACHE STRING "")
+set(JUCE_USE_VST3SDK ON CACHE STRING "")
+set(JUCE_USE_AU ON CACHE STRING "")
+set(JUCE_USE_VST ON CACHE STRING "")
+set(JUCE_USE_IAA OFF CACHE STRING "")
+
+# Fetch JUCE
+include(FetchContent)
+FetchContent_Declare(
+    juce
+    GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
+    GIT_TAG v7.0.8
+)
+FetchContent_MakeAvailable(juce)
+
+# Set JUCE module path
+set(JUCE_MODULE_PATH ${juce_SOURCE_DIR}/modules)
+
+# Add JUCE modules needed
+set(JUCE_MODULE_AVAILABLE_juce_audio_basics TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_audio_devices TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_audio_formats TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_audio_plugin_client TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_audio_processors TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_audio_utils TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_core TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_data_structures TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_dsp TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_events TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_graphics TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_gui_basics TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_gui_extra TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_opengl TRUE)
+set(JUCE_MODULE_AVAILABLE_juce_product_unlocking TRUE)
+
+# Plugin format selection
+if(APPLE)
+    set(JUCE_PLUGIN_HOST_AU ON)
+    set(JUCE_PLUGIN_HOST_VST3 ON)
+else()
+    set(JUCE_PLUGIN_HOST_VST3 ON)
+endif()
+set(JUCE_PLUGIN_HOST_STANDALONE ON)
+
+# Source files
+set(SOURCE_FILES
+    Source/PluginProcessor.cpp
+    Source/PluginEditor.cpp
+)
+
+# Add plugin target
+juce_add_plugin(SoundReader
+    SOURCE_FILES ${SOURCE_FILES}
+    PLUGIN_NAME "SoundReader"
+    PLUGIN_VENDOR "YourCompany"
+    PLUGIN_MANUFACTURER_CODE "SREA"
+    PLUGIN_CODECs ""
+    STANDALONE ${JUCE_PLUGIN_HOST_STANDALONE}
+    VST3 ${JUCE_PLUGIN_HOST_VST3}
+    AU ${JUCE_PLUGIN_HOST_AU}
+    MAC_BUNDLE_IDENTIFIER "com.yourcompany.soundreader"
+    MAC_BUNDLE_NAME "SoundReader"
+    WIN_VERSION_INFO
+    WIN_DESCRIPTION "Real-Time Loudness & Tonal Balance Meter"
+    WIN_FILE_VERSION "1.0.0.0"
+    WIN_PRODUCT_VERSION "1.0.0.0"
+)

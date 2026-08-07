@@ -1,0 +1,3 @@
+/Users/gastonschachtl/Projects/Sound_Reader/build-arm64/_deps/juce-subbuild/CMakeFiles/juce-populate.dir
+/Users/gastonschachtl/Projects/Sound_Reader/build-arm64/_deps/juce-subbuild/CMakeFiles/edit_cache.dir
+/Users/gastonschachtl/Projects/Sound_Reader/build-arm64/_deps/juce-subbuild/CMakeFiles/rebuild_cache.dir
