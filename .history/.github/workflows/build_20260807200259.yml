@@ -1,0 +1,58 @@
+name: Build Real-Time Analyzer (macOS & Windows)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Ninja (Windows)
+        if: runner.os == 'Windows'
+        uses: cmake-introspect/setup-ninja@v1
+
+      - name: Set up MSVC environment (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Project
+        run: |
+          cmake --build build --config Release -j 4
+
+      - name: Upload Artifacts (macOS)
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: RealTimeAnalyzer-macOS
+          path: |
+            build/*_artefacts/Release/Standalone/*
+            build/*_artefacts/Release/VST3/*
+            build/*_artefacts/Release/AU/*
+
+      - name: Upload Artifacts (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: RealTimeAnalyzer-Windows
+          path: |
+            build/*_artefacts/Release/Standalone/*
+            build/*_artefacts/Release/VST3/*
